@@ -10,7 +10,14 @@ def isVisible(ta, ya, tb, yb, tc, yc):
     else:
         return False
 
-def getVisibilityGraph(t, ts):
+def getVisibilityGraph(t, ts, options={
+    "visualize": False,
+}):
+
+    myRed  = "#f49a8e"
+    myBlue = "#6875eb"
+
+
     visGraph = nx.Graph()
     for i in range(len(ts)):
         visGraph.add_node(i)
@@ -18,38 +25,41 @@ def getVisibilityGraph(t, ts):
             tsInBetween = ts[i+1:j]
             if len(tsInBetween) == 0:
                 # i, j consecutive indices; so visible
-                # print(f"{ts[i]} is visible from {ts[j]}")
-                # plt.plot([t[i], t[j]], [ts[i],ts[j]], color="green", zorder=200)
+                if options["visualize"] == True:
+                    plt.plot([t[i], t[j]], [ts[i],ts[j]], color=myBlue, zorder=200)
                 visGraph.add_edge(i, j)
             elif len(tsInBetween) > 0:
                 stillVisible = True
                 for k in range(len(tsInBetween)):
                     visFlag = isVisible(t[i], ts[i], t[j], ts[j], t[i+1+k], tsInBetween[k])
                     if visFlag == False:
-                        # print(f"{i},{ts[i]} not visible from {j},{ts[j]} because of obstacle {i+1+k},{tsInBetween[k]}")
-                        # plt.plot([t[i], t[j]], [ts[i],ts[j]], color="lightgray", zorder=199)
+                        if options["visualize"] == True:
+                            plt.plot([t[i], t[j]], [ts[i],ts[j]], color="#d4dde3", zorder=199)
                         stillVisible = False
                         break
 
                 if stillVisible == True:
-                    # print(f"{ts[i]} is visible from {ts[j]}")
-                    # plt.plot([t[i], t[j]], [ts[i],ts[j]], color="green", zorder=200)
+                    if options["visualize"] == True:
+                        plt.plot([t[i], t[j]], [ts[i],ts[j]], color=myBlue, zorder=200)
                     visGraph.add_edge(i, j)
+    
+    if options["visualize"] == True:
+        plt.bar(t, ts, width=.05, zorder=99, color=myRed)
+        plt.scatter(t, ts, zorder=300, color="#242444")
+        plt.show()
+
     return visGraph
+
 
 # -------------------
 # test
-# t = [0, 1, 2, 3, 4, 5]
-# ts = [0, 1, 20, 3, 4, 100]
 t = np.arange(0, 3*np.pi, np.pi/10)
 # t = np.arange(0, 10, 2)
-ts = np.sin(t) +1
-# plt.bar(t, ts, width=.05, zorder=99)
-# plt.scatter(t, ts, zorder=300)
+ts = np.sin(t)
 
 # visGraph = getVisibilityGraph(t, ts, plt)
-visGraph = getVisibilityGraph(t, ts)
-nx.write_adjlist(visGraph, 'test.adjlist')
+visGraph = getVisibilityGraph(t, ts, options={"visualize": True})
+# nx.write_adjlist(visGraph, 'test.adjlist')
 
 """ 
 plt.title("Visibility graph of $f(t)= sin(t)+1$")
@@ -71,7 +81,7 @@ degreeFreq = nx.degree_histogram(visGraph)
 degreesPossible = range(len(degreeFreq))
 # plt.bar(np.arange(0, len(degreeFreq)), degreeFreq, width=0.1, color='lightgray', zorder=0)
 # plt.scatter(np.arange(0, len(degreeFreq)), degreeFreq, zorder=1)
-plt.loglog(degreesPossible, degreeFreq, 'go-')
+plt.plot(degreesPossible, degreeFreq, 'go-')
 plt.xlabel('Degree')
 plt.ylabel('Frequency')
 plt.show()
