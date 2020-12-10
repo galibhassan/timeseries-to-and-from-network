@@ -43,8 +43,8 @@ def getVisibilityGraph(t, ts, options={
                     visGraph.add_edge(i, j)
     
     if options["visualize"] == True:
-        plt.bar(t, ts, width=.05, zorder=99, color=myRed)
-        plt.scatter(t, ts, zorder=300, color="#242444")
+        plt.bar(t.reshape(len(t)), ts.reshape(len(ts)), width=.05, zorder=99, color=myRed)
+        plt.scatter(t.reshape(len(t)), ts.reshape(len(ts)), zorder=300, color="#242444")
         plt.show()
 
     return visGraph
