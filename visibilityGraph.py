@@ -2,7 +2,6 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 def isVisible(ta, ya, tb, yb, tc, yc):
     heightLimit = yb + (ya-yb)*(tb-tc)/(tb-ta)
     if(yc < heightLimit):
@@ -49,53 +48,3 @@ def getVisibilityGraph(t, ts, options={
         plt.show()
 
     return visGraph
-
-
-# -------------------
-# test
-t = np.arange(0, 3*np.pi, np.pi/10)
-# t = np.arange(0, 10, 2)
-ts = np.sin(t)
-
-# visGraph = getVisibilityGraph(t, ts, plt)
-visGraph = getVisibilityGraph(t, ts, options={"visualize": True})
-# nx.write_adjlist(visGraph, 'test.adjlist')
-
-""" 
-plt.title("Visibility graph of $f(t)= sin(t)+1$")
-plt.text(0, -0.2, 'Green lines are edges \nGray lines are failed edges', style='italic',
-        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 5}, zorder=1000)
-
-plt.show()
-"""
-
-def getDegrees(g):
-    degrees = []
-    for i in g.nodes:
-        degrees.append(g.degree(i))
-    return degrees
-
-
-# degrees = getDegrees(visGraph)
-degreeFreq = nx.degree_histogram(visGraph)
-degreesPossible = range(len(degreeFreq))
-# plt.bar(np.arange(0, len(degreeFreq)), degreeFreq, width=0.1, color='lightgray', zorder=0)
-# plt.scatter(np.arange(0, len(degreeFreq)), degreeFreq, zorder=1)
-plt.plot(degreesPossible, degreeFreq, 'go-')
-plt.xlabel('Degree')
-plt.ylabel('Frequency')
-plt.show()
-
-
-""" 
-plt.hist(degrees)
-plt.title("degree distribution of visibility graph of $f(t) = sin(t)+1$")
-plt.xlabel("Degree")
-plt.ylabel('Count')
-plt.text(0, 50, f'From {t[0]} to {t[len(t)-1]:.{2}f} ', style='italic',
-        bbox={'facecolor': 'white', 'alpha': 1, 'pad': 5}, zorder=1000)
-plt.show()
- """
-
-
-# '{number:.{digits}f}'
