@@ -1,32 +1,31 @@
 import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
-import visibilityGraph as vg
+import visibilityGraphWeighted as vgs
 
+GRAPH_DIR_PATH = 'generatedGraphs/sin(t)/vgw'
+PLOT_DIR_PATH = 'plots/sin(t)/vgw'
 
-GRAPH_DIR_PATH = 'generatedGraphs'
-PLOT_DIR_PATH = 'plots'
-
-indices = np.arange(3, 300, 2)
-interval = 0.1
+indices = np.arange(3, 60, 2)
+interval = 0.2
 for i in indices:
     t = np.arange(0, i*np.pi, interval*np.pi)
     ts = np.sin(t)
-    fileName = f'sin(t)__0-{i}pi__{interval}pi'
-    visGraph = vg.getVisibilityGraph(t, ts, options={"visualize": False})
-    nx.write_adjlist(visGraph, f'{GRAPH_DIR_PATH}/{fileName}.adjlist')
+    fileName = f'sin(t)__0-{i}pi__{interval}pi__weighted'
+    visGraph = vgs.getVisibilityGraph(t, ts, options={"visualize": False})
+    nx.write_weighted_edgelist(visGraph, f'{GRAPH_DIR_PATH}/{fileName}.edgelist')
 
-    degreeFreq = nx.degree_histogram(visGraph)
-    degreesPossible = range(len(degreeFreq))
-    # plt.bar(degreesPossible, degreeFreq, zorder=0, width=0.1)
-    plt.plot(degreesPossible, degreeFreq, 'o-', zorder=1)
-    plt.xlabel('Degree')
-    plt.ylabel('Frequency')
+    wHist = vgs.getWeightHistogram(visGraph)
+    plt.clf()
+    plt.plot(wHist["x"], wHist["y"], 'o')
+    plt.xlabel("Combined weights for one node")
+    plt.ylabel("Count")
     plt.title(
-        f"Degree frequency of f(t)=sin(t) visibility graph \nin [0, {indices[0]} to {i}*pi] with {interval} t-increment \n#Node = {visGraph.number_of_nodes()}, #Edges = {visGraph.number_of_edges()}")
+        f"Edge-weight distribution of nodes of f(t)=sin(t) weighted visibility graph \nin [0, {indices[0]} to {i}*pi] with {interval} t-increment \n#Node = {visGraph.number_of_nodes()}, #Edges = {visGraph.number_of_edges()}")
 
     imageFileName = f'{PLOT_DIR_PATH}/{fileName}.png'
     plt.savefig(imageFileName, dpi=None, facecolor='w', edgecolor='w',
                 orientation='portrait', papertype=None, format=None,
                 transparent=False, bbox_inches=None, pad_inches=0.1,
                 metadata=None)
+    plt.clf()

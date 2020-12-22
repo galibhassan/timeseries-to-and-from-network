@@ -2,6 +2,7 @@ import networkx as nx
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def isVisible(ta, ya, tb, yb, tc, yc):
     heightLimit = yb + (ya-yb)*(tb-tc)/(tb-ta)
     if(yc < heightLimit):
@@ -9,8 +10,10 @@ def isVisible(ta, ya, tb, yb, tc, yc):
     else:
         return False
 
-def getVisibilityGraph(t, ts, options={"visualize": False}):
 
+def getVisibilityGraph(t, ts, options={
+    "visualize": False,
+}):
     myRed = "#f49a8e"
     myBlue = "#6875eb"
 
@@ -22,9 +25,11 @@ def getVisibilityGraph(t, ts, options={"visualize": False}):
             if len(tsInBetween) == 0:
                 # i, j consecutive indices; so visible
                 if options["visualize"] == True:
+                    
                     plt.plot([t[i], t[j]], [ts[i], ts[j]],
                              color=myBlue, zorder=200)
-                visGraph.add_edge(i, j)
+                edgeWeight = np.abs(ts[j]-ts[i])
+                visGraph.add_edge(i, j, weight=edgeWeight)
             elif len(tsInBetween) > 0:
                 stillVisible = True
                 for k in range(len(tsInBetween)):
@@ -41,7 +46,8 @@ def getVisibilityGraph(t, ts, options={"visualize": False}):
                     if options["visualize"] == True:
                         plt.plot([t[i], t[j]], [ts[i], ts[j]],
                                  color=myBlue, zorder=200)
-                    visGraph.add_edge(i, j)
+                    edgeWeight = np.abs(ts[j]-ts[i])
+                    visGraph.add_edge(i, j, weight=edgeWeight)
 
     if options["visualize"] == True:
         plt.bar(t.reshape(len(t)), ts.reshape(len(ts)),
@@ -49,6 +55,19 @@ def getVisibilityGraph(t, ts, options={"visualize": False}):
         plt.scatter(t.reshape(len(t)), ts.reshape(
             len(ts)), zorder=300, color="#242444")
         plt.show()
-
     return visGraph
+
+
+def getWeightHistogram(G):
+    weightsArray = []
+    nodesArray = []
+    weightedDegreeCount = G.degree(weight="weight")
+    for pair in weightedDegreeCount:
+        nodesArray.append(pair[0])    
+        weightsArray.append(pair[1])
+
+    weightsArrayNp = np.array(weightsArray)
+    hist, bin_edges = np.histogram(weightsArrayNp, bins=len(weightsArray), range=(0, weightsArrayNp.max()))
+
+    return {"y": np.array(hist), "x": np.array(bin_edges[1:])}
 

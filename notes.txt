@@ -1,0 +1,8 @@
+From weighted graph to timeseries (reverse visibility)
+
+Anomaly:
+A node which has very low edge-weights but with high degree probably cannot occur. Since in a visibility graph, only those nodes will have high edge-weights (i.e, the consecutive y-differences) which correspond to high y-values, thus can see a lot of nodes.
+
+Idea:
+How many nodes are there of one of a type? (Basically, the left-extended tail). Find them. Construct a sequence.
+In case of multifractality, probably the sequence is nonlinear in log-log plot. 
