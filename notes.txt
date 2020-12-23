@@ -6,3 +6,16 @@ A node which has very low edge-weights but with high degree probably cannot occu
 Idea:
 How many nodes are there of one of a type? (Basically, the left-extended tail). Find them. Construct a sequence.
 In case of multifractality, probably the sequence is nonlinear in log-log plot. 
+
+
+Degree frequency:
+    # degreeFreq = np.array(nx.degree_histogram(visGraph))/visGraph.number_of_nodes()
+    # degreesPossible = range(len(degreeFreq))
+    # plt.bar(degreesPossible, degreeFreq, zorder=0 )
+    # plt.scatter(degreesPossible, degreeFreq, zorder=1 )
+
+mat file data loading example
+    # data = loadmat('./fractaldata/fractaldata.mat')
+    # data_multifractal_ihlen = np.array(data["multifractal"])
+    # data_monofractal = np.array(data["monofractal"])
+    # data_whitenoise = np.array(data["whitenoise"])
