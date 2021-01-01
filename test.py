@@ -7,12 +7,12 @@ GRAPH_DIR_PATH = 'generatedGraphs/sin(t)/vgw'
 PLOT_DIR_PATH = 'plots/sin(t)/vgw'
 
 indices = np.arange(3, 60, 2)
-interval = 0.2
+interval = 1
 for i in indices:
     t = np.arange(0, i*np.pi, interval*np.pi)
     ts = np.sin(t)
     fileName = f'sin(t)__0-{i}pi__{interval}pi__weighted'
-    visGraph = vgs.getVisibilityGraph(t, ts, options={"visualize": False})
+    visGraph = vgs.getVisibilityGraph(t, ts, options={"visualize": True})
     nx.write_weighted_edgelist(visGraph, f'{GRAPH_DIR_PATH}/{fileName}.edgelist')
 
     wHist = vgs.getWeightHistogram(visGraph)
